@@ -7,7 +7,7 @@ public class Main {
         Board board = new Board();
         Controller controller = new Controller(board);
         board.display();
-        controller.moveToken();
+        controller.foo();
         board.display();
     }
 }

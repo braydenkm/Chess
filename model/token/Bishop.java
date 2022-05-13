@@ -4,9 +4,22 @@ import globals.Team;
 import model.Board;
 import model.Point;
 
+ 
+/**
+ * Bishop is a concrete class of Token.
+ * A Bishop object encapsulates the behaviours and restrictions of a bishop
+ * chess piece.
+ */
 public class Bishop extends Token {
 
-    Bishop(Team team, Point startingLocation, Board board) {
+    /**
+     * Default Constructor for Bishop.
+     * 
+     * @param team              the team this bishop is sided with.
+     * @param startingLocation  the location this bishop starts at.
+     * @param board             the game board this bishop is playing on.
+     */
+    protected Bishop(Team team, Point startingLocation, Board board) {
         super(team, startingLocation, board);
     }
 
@@ -14,10 +27,10 @@ public class Bishop extends Token {
     @Override
     protected boolean isValidMove(Point target) {
         
-        if (!target.inBounds()) {
+        if (!target.isInBounds()) {
             return false;
         }
-        if (this.isBlockedTo(target)) {
+        if (this.isBlockedTowards(target)) {
             return false;
         }
         
@@ -30,7 +43,7 @@ public class Bishop extends Token {
     
     
     @Override
-    protected boolean isBlockedTo(Point target) {
+    protected boolean isBlockedTowards(Point target) {
         return board.hasTokensBetweenPoints(this.getLocation(), target);
     }
     

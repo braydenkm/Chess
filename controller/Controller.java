@@ -1,9 +1,11 @@
 package controller;
+
 import globals.Team;
+import globals.TokenType;
 import model.Board;
 import model.Point;
-import model.token.Rook;
 import model.token.Token;
+import model.token.TokenFactory;
 
 public class Controller {
     
@@ -15,10 +17,12 @@ public class Controller {
     }
     
     
-    public void moveToken() {
-        board.placeToken(new Rook(Team.BLACK, new Point(1, 2), board));
+    public void foo() {
+        TokenFactory tokenMaker = new TokenFactory(board);
+        board.placeToken(tokenMaker.build(TokenType.ROOK, Team.BLACK, new Point(1, 2)));
         Token token = board.getTokenAt(new Point(1, 1));
         System.out.println(token.toString());
-        token.move(new Point(1, 2));
+        token.move(new Point(1, 3));
+        token.move(new Point(1, 4));
     }
 }

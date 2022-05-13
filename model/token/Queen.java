@@ -4,9 +4,22 @@ import globals.Team;
 import model.Board;
 import model.Point;
 
+
+/**
+ * Queen is a concrete class of Token.
+ * A Queen object encapsulates the behaviours and restrictions of a queen
+ * chess piece.
+ */
 public class Queen extends Token {
 
-    Queen(Team team, Point startingLocation, Board board) {
+    /**
+     * Default Constructor for Queen.
+     * 
+     * @param team              the team this queen is sided with.
+     * @param startingLocation  the location this queen starts at.
+     * @param board             the game board this queen is playing on.
+     */
+    protected Queen(Team team, Point startingLocation, Board board) {
         super(team, startingLocation, board);
     }
 
@@ -14,17 +27,17 @@ public class Queen extends Token {
     @Override
     protected boolean isValidMove(Point target) {
         
-        if (!target.inBounds()) {
+        if (!target.isInBounds()) {
             return false;
         }
-        if (this.isBlockedTo(target)) {
+        if (this.isBlockedTowards(target)) {
             return false;
         }
         
         if (!target.isSameColumn(this.location)) {
             return false;
         }
-        if (target.distanceBetweenY(this.location) != 1) {
+        if (target.yDistanceTo(this.location) != 1) {
             return false;
         }
         return true;
@@ -32,7 +45,7 @@ public class Queen extends Token {
     
     
     @Override
-    protected boolean isBlockedTo(Point target) {
+    protected boolean isBlockedTowards(Point target) {
         return board.hasTokensBetweenPoints(this.getLocation(), target);
     }
     

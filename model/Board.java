@@ -1,27 +1,42 @@
 package model;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 import globals.Constants;
 import globals.Team;
 import globals.TokenType;
 import model.token.Token;
 import model.token.TokenFactory;
 
+
+/**
+ * Board is a container class for holding game tokens and performing
+ * checks between them.
+ */
 public class Board {
+    
+    /**
+     * List containing all the tokens used in the game.
+     */
+    private ArrayList<Token> gameTokens;
 
-    private static final int WIDTH = Constants.WIDTH;
-    private static final int HEIGHT = Constants.HEIGHT;
-    private static final int OFFSET = 1;
-    private ArrayList<Token> whiteTokens;
-    private ArrayList<Token> blackTokens;
 
-
+    /**
+     * Default Constructor for Board.
+     */
     public Board() {
-        this.whiteTokens = initializeTeamTokens(Team.WHITE);
-        this.blackTokens = initializeTeamTokens(Team.BLACK);
+        this.gameTokens = initializeGameTokens();
     }
     
     
+    /**
+     * Check if there are any tokens between two tiles of the gameboard.
+     * 
+     * @param   source  the source point on the board.
+     * @param   target  the target point on the board.
+     * @return          true if there are any tokens between the source and
+     *                  target points.
+     *                  false otherwise.
+     */
     public boolean hasTokensBetweenPoints(Point source, Point target) {
         if (!source.isSameRow(target) && !source.isSameColumn(target) && !source.isSameDiagonal(target)) {
             // Throw invalid parameters exception.
@@ -49,7 +64,7 @@ public class Board {
         else if (source.isSameDiagonal(target)) {
             int xSource = source.getX();
             int ySource = source.getY();
-            int steps = source.distanceBetweenX(target);
+            int steps = source.xDistanceTo(target);
             boolean isMovingRight = xSource - target.getX() > 0;
             boolean isMovingUp    = ySource - target.getY() > 0;
             
@@ -61,70 +76,37 @@ public class Board {
         }
 
         for (Point point : possibleTiles) {
-            for (Token token : this.whiteTokens) {
-                if (token.getLocation().isSameAs(point)) {
-                    return true;
-                }
-            }
-            
-            for (Token token : this.blackTokens) {
-                if (token.getLocation().isSameAs(point)) {
+            for (Token token : this.gameTokens) {
+                if (token.getLocation().isAtSameLocationAs(point)) {
                     return true;
                 }
             }
         }
-        
-        
-        
+
         return false;
     }
 
 
-    private ArrayList<Token> initializeTeamTokens(Team team) {
-        boolean isWhiteTeam = team == Team.WHITE;
-        int pawnY     = (isWhiteTeam) ? 1 : HEIGHT - OFFSET - 1;
-        int backLineY = (isWhiteTeam) ? 0 : HEIGHT - OFFSET;
-        
-        TokenFactory tokenMaker = new TokenFactory(this);
-        ArrayList<Token> tokens = new ArrayList<>();
-        for (int i = 0; i < WIDTH; i++) {
-            tokens.add(tokenMaker.build(TokenType.PAWN, team, new Point(i, pawnY)));
-        }
-        
-        tokens.add(tokenMaker.build(TokenType.ROOK,   team, new Point(0,                  backLineY)));
-        tokens.add(tokenMaker.build(TokenType.ROOK,   team, new Point(WIDTH - OFFSET - 0, backLineY)));
-
-        tokens.add(tokenMaker.build(TokenType.BISHOP, team, new Point(1,                  backLineY)));
-        tokens.add(tokenMaker.build(TokenType.BISHOP, team, new Point(WIDTH - OFFSET - 1, backLineY)));
-
-        tokens.add(tokenMaker.build(TokenType.KNIGHT, team, new Point(2,                  backLineY)));
-        tokens.add(tokenMaker.build(TokenType.KNIGHT, team, new Point(WIDTH - OFFSET - 2, backLineY)));
-        
-        int kingX  = (isWhiteTeam) ? 3 : 4;
-        int queenX = (isWhiteTeam) ? 4 : 3; 
-        tokens.add(tokenMaker.build(TokenType.QUEEN,  team, new Point(kingX,  backLineY)));
-        tokens.add(tokenMaker.build(TokenType.KING,   team, new Point(queenX, backLineY)));
-
-        return tokens;
-    }
-
-
+    // Calls functions to display the game board.
+    // Planned to be replaced when graphics are added.
     public void display() {
-        System.out.println(boardAsString());
+        System.out.println(toString());
     }
 
 
-    // This function probably extremely slow and is very ugly.
-    private String boardAsString() {
+    // Creates the board as a string.
+    // Planned to be replaced when graphics are added.
+    @Override
+    public String toString() {
         String string = "\n+--+--+--+--+--+--+--+--+";
-        for (int i = HEIGHT * 2; i >=  1; i--) {
+        for (int i = Constants.HEIGHT * 2; i >=  1; i--) {
             if (!isEven(i)) {
                 string += "\n+--+--+--+--+--+--+--+--+";
             }
             else {
                 string += "\n";
                 int y = (i - 1) / 2;
-                for (int j = 0; j < WIDTH * 2 + 1; j++) {
+                for (int j = 0; j < Constants.WIDTH * 2 + 1; j++) {
                     if (isEven(j)) {
                         string += "|";
                     }
@@ -132,14 +114,7 @@ public class Board {
                         int x = (j - 1) / 2;
                         Point target = new Point(x, y);
                         boolean spaceIsTaken = false;
-                        for (Token token : whiteTokens) {
-                            if (token.isAtPoint(target)) {
-                                string += token.toStringShort();
-                                spaceIsTaken = true;
-                                continue;
-                            }
-                        }
-                        for (Token token : blackTokens) {
+                        for (Token token : gameTokens) {
                             if (token.isAtPoint(target)) {
                                 string += token.toStringShort();
                                 spaceIsTaken = true;
@@ -157,13 +132,15 @@ public class Board {
     }
     
     
+    /**
+     * Gets the token at the target location.
+     * 
+     * @param   target  the target location to grab the token from.
+     * @return          Token at the target location.
+     *                  null otherwise.
+     */
     public Token getTokenAt(Point target) {
-        for (Token token : whiteTokens) {
-            if (token.isAtPoint(target)) {
-                return token;
-            }
-        }
-        for (Token token : blackTokens) {
+        for (Token token : gameTokens) {
             if (token.isAtPoint(target)) {
                 return token;
             }
@@ -172,47 +149,91 @@ public class Board {
     }
     
     
+    /**
+     * Adds a token to the list of game tokens.
+     * 
+     * @param   token   token to be added to the list of game tokens.
+     */
     public void placeToken(Token token) {
-        if (token.getTeam() == Team.WHITE) this.whiteTokens.add(token);
-        else this.blackTokens.add(token);
+        this.gameTokens.add(token);
     }
     
     
+    /**
+     * Removes a token from the list of game tokens.
+     * 
+     * @param   target  target token to be removed from the list of game
+     *                  tokens.
+     */
     public void removeTokenAt(Point target) {
-        for (Token token : whiteTokens) {
+        for (Token token : gameTokens) {
             if (token.isAtPoint(target)) {
-                whiteTokens.remove(token);
+                gameTokens.remove(token);
                 return;
             }
         }
+    }
+
+
+    /**
+     * Create the game tokens on each team for a standard game of chess.
+     * 
+     * @return  the game tokens for each team for a standard game of chess.
+     */
+    private ArrayList<Token> initializeGameTokens() {
+        ArrayList<Token> allTokens = initializeTeamTokens(Team.WHITE);
+        ArrayList<Token> blackTokens = initializeTeamTokens(Team.BLACK);
         for (Token token : blackTokens) {
-            if (token.isAtPoint(target)) {
-                blackTokens.remove(token);
-                return;
-            }
+            allTokens.add(token);
         }
-    }
-    
-    
-    public ArrayList<Token> getTeamTokens(Team team) {
-        return (team == Team.WHITE) ? this.whiteTokens : this.blackTokens;
+        return allTokens;
     }
 
 
+    /**
+     * Create the game tokens on each team for a standard game of chess.
+     * 
+     * @param   team    the team to create tokens for.
+     * @return          the game tokens for specified team for a standard
+     *                  game of chess.
+     */
+    private ArrayList<Token> initializeTeamTokens(Team team) {
+        boolean isWhiteTeam = team == Team.WHITE;
+        int pawnY     = (isWhiteTeam) ? 1 : Constants.HEIGHT - Constants.OFFSET - 1;
+        int backLineY = (isWhiteTeam) ? 0 : Constants.HEIGHT - Constants.OFFSET;
+        
+        TokenFactory tokenMaker = new TokenFactory(this);
+        ArrayList<Token> tokens = new ArrayList<>();
+        for (int i = 0; i < Constants.WIDTH; i++) {
+            tokens.add(tokenMaker.build(TokenType.PAWN, team, new Point(i, pawnY)));
+        }
+        
+        tokens.add(tokenMaker.build(TokenType.ROOK,   team, new Point(0, backLineY)));
+        tokens.add(tokenMaker.build(TokenType.ROOK,   team, new Point(Constants.WIDTH - Constants.OFFSET,     backLineY)));
+
+        tokens.add(tokenMaker.build(TokenType.BISHOP, team, new Point(1, backLineY)));
+        tokens.add(tokenMaker.build(TokenType.BISHOP, team, new Point(Constants.WIDTH - Constants.OFFSET - 1, backLineY)));
+
+        tokens.add(tokenMaker.build(TokenType.KNIGHT, team, new Point(2, backLineY)));
+        tokens.add(tokenMaker.build(TokenType.KNIGHT, team, new Point(Constants.WIDTH - Constants.OFFSET - 2, backLineY)));
+        
+        int kingX  = (isWhiteTeam) ? 3 : 4;
+        int queenX = (isWhiteTeam) ? 4 : 3; 
+        tokens.add(tokenMaker.build(TokenType.QUEEN,  team, new Point(kingX,  backLineY)));
+        tokens.add(tokenMaker.build(TokenType.KING,   team, new Point(queenX, backLineY)));
+
+        return tokens;
+    }
+
+
+    /**
+     * Check if a number is even.
+     * 
+     * @param   number  the number to perform check on.
+     * @return          true if number is even.
+     *                  false otherwise.
+     */
     private boolean isEven(int number) {
         return number % 2 == 0;
-    }
-
-
-    public String toString() {
-        String string = "White:";
-        for (Token token: whiteTokens) {
-            string += "\n  " + token.toString();
-        }
-        string += "\nBlack:";
-        for (Token token: blackTokens) {
-            string += "\n  " + token.toString();
-        }
-        return string;
     }
 }

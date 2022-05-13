@@ -1,32 +1,45 @@
 package model.token;
 
-import globals.Team;
 import model.Board;
 import model.Point;
+import globals.Team;
 
+
+/**
+ * Rook is a concrete class of Token.
+ * A Rook object encapsulates the behaviours and restrictions of a rook
+ * chess piece.
+ */
 public class Rook extends Token {
 
-    public Rook(Team team, Point startingLocation, Board board) {
+    /**
+     * Default Constructor for Rook.
+     * 
+     * @param team              the team this rook is sided with.
+     * @param startingLocation  the location this rook starts at.
+     * @param board             the game board this rook is playing on.
+     */
+    protected Rook(Team team, Point startingLocation, Board board) {
         super(team, startingLocation, board);
     }
 
 
     @Override
     protected boolean isValidMove(Point target) {
-        boolean isSameColumn = this.getLocation().isSameColumn(target);
-        boolean isSameRow = this.getLocation().isSameRow(target);
+        boolean sameColumn = this.getLocation().isSameColumn(target);
+        boolean sameRow = this.getLocation().isSameRow(target);
         
-        if (!target.inBounds()) {
+        if (!target.isInBounds()) {
             return false;
         }
-        if (this.isBlockedTo(target)) {
+        if (this.isBlockedTowards(target)) {
             return false;
         }
         
-        if (isSameColumn && !isSameRow) {
+        if (sameColumn && !sameRow) {
             return true;
         }
-        if (!isSameColumn && isSameRow) {
+        if (!sameColumn && sameRow) {
             return true;
         }
         return false;
@@ -34,7 +47,7 @@ public class Rook extends Token {
     
     
     @Override
-    protected boolean isBlockedTo(Point target) {
+    protected boolean isBlockedTowards(Point target) {
         return board.hasTokensBetweenPoints(this.getLocation(), target);
     }
     

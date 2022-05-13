@@ -4,9 +4,22 @@ import globals.Team;
 import model.Board;
 import model.Point;
 
+
+/**
+ * Knight is a concrete class of Token.
+ * A Knight object encapsulates the behaviours and restrictions of a knight
+ * chess piece.
+ */
 public class Knight extends Token {
 
-    Knight(Team team, Point startingLocation, Board board) {
+    /**
+     * Default Constructor for Knight.
+     * 
+     * @param team              the team this knight is sided with.
+     * @param startingLocation  the location this knight starts at.
+     * @param board             the game board this knight is playing on.
+     */
+    protected Knight(Team team, Point startingLocation, Board board) {
         super(team, startingLocation, board);
     }
 
@@ -14,14 +27,14 @@ public class Knight extends Token {
     @Override
     protected boolean isValidMove(Point target) {
         
-        if (!target.inBounds()) {
+        if (!target.isInBounds()) {
             return false;
         }
         
         if (!target.isSameColumn(this.location)) {
             return false;
         }
-        if (target.distanceBetweenY(this.location) != 1) {
+        if (target.yDistanceTo(this.location) != 1) {
             return false;
         }
         return true;
