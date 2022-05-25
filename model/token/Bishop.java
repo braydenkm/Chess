@@ -33,11 +33,13 @@ public class Bishop extends Token {
             return false;
         }
         
-        if (getLocation().isSameDiagonal(target)) {
-            return true;
-        }
-        
-        return false;
+        return location.isSameDiagonal(target);
+    }
+
+
+    @Override
+    protected boolean isBlockedTowards(Point target) {
+        return board.hasTokensBetweenPoints(location, target);
     }
     
 

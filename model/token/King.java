@@ -32,17 +32,7 @@ public class King extends Token {
 
         int xDistance = location.xDistanceTo(target);
         int yDistance = location.yDistanceTo(target);
-        if (xDistance <= 1 && yDistance <= 1) {
-            return true;
-        }
-        
-        return false;
-    }
-
-
-    @Override
-    protected boolean isBlockedTowards(Point target) {
-        return false;
+        return xDistance <= 1 && yDistance <= 1;
     }
     
 

@@ -26,18 +26,14 @@ public class Knight extends Token {
 
     @Override
     public boolean isValidMove(Point target) {
-        
         if (!target.isInBounds()) {
             return false;
         }
 
-        return false;
-    }
-
-
-    @Override
-    protected boolean isBlockedTowards(Point target) {
-        return false;
+        int xDistance = location.xDistanceTo(target);
+        int yDistance = location.yDistanceTo(target);
+        return  (xDistance == 1 && yDistance == 2) || 
+                (xDistance == 2 && yDistance == 1);
     }
     
 

@@ -2,9 +2,6 @@ package model.token;
 
 import model.Board;
 import model.Point;
-
-import java.util.ArrayList;
-
 import globals.Team;
 
 
@@ -44,7 +41,7 @@ public class Pawn extends Token {
         if (isBlockedTowards(target)) {
             return false;
         }
-        
+
         boolean sameColumn = location.isSameColumn(target);
         boolean singleTileMove = location.yDistanceTo(target) == 1;
         boolean singleDiagonalMove = singleTileMove && location.xDistanceTo(target) == 1;
@@ -60,7 +57,8 @@ public class Pawn extends Token {
         if (singleDiagonalMove && opponentAtTarget) {
             return true;
         }
-        return false;
+
+        return !isBlockedTowards(target);
     }
     
     

@@ -207,7 +207,7 @@ public abstract class Token {
      *                  false otherwise.
      */
     protected boolean isBlockedTowards(Point target) {
-        return board.hasTokensBetweenPoints(location, target);
+        return false;
     }
     
     

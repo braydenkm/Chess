@@ -18,7 +18,15 @@ public class Board {
      * List containing all the tokens used in the game.
      */
     private ArrayList<Token> gameTokens;
+
+    /**
+     * King Token for white team.
+     */
     private Token whiteKing;
+
+    /**
+     * King Token for black team.
+     */
     private Token blackKing;
 
 
@@ -31,15 +39,17 @@ public class Board {
     }
     
     
+    // Generate tokens on board for debugging.
+    // Remove later.
     private void debugGameTokens() {
         ArrayList<Token> tokens = new ArrayList<>();
         TokenFactory tokenMaker = new TokenFactory(this);
 
-        whiteKing = tokenMaker.build(TokenType.KING, Team.WHITE, new Point(0, 0));
+        whiteKing = tokenMaker.build(TokenType.KING, Team.WHITE, new Point(1, 0));
         blackKing = tokenMaker.build(TokenType.KING, Team.BLACK, new Point(0, 7));
         tokens.add(whiteKing);
         tokens.add(blackKing);
-        tokens.add(tokenMaker.build(TokenType.ROOK, Team.WHITE, new Point(0, 1)));
+        tokens.add(tokenMaker.build(TokenType.KNIGHT, Team.WHITE, new Point(0, 1)));
         tokens.add(tokenMaker.build(TokenType.ROOK, Team.BLACK, new Point(0, 3)));
 
         gameTokens = tokens;
@@ -56,12 +66,6 @@ public class Board {
      *                  false otherwise.
      */
     public boolean hasTokensBetweenPoints(Point source, Point target) {
-        if (!source.isSameRow(target) && !source.isSameColumn(target) && !source.isSameDiagonal(target)) {
-            // Throw invalid parameters exception.
-            System.out.println("ERROR: This should be an exception inside Board.java");
-            return true;
-        }
-        
         ArrayList<Point> possibleTiles = new ArrayList<>();
         
         if (source.isSameRow(target)) {
@@ -117,13 +121,13 @@ public class Board {
     // Planned to be replaced when graphics are added.
     @Override
     public String toString() {
-        String string = "\n+--+--+--+--+--+--+--+--+";
+        String string = "\n  +--+--+--+--+--+--+--+--+";
         for (int i = Constants.HEIGHT * 2; i >=  1; i--) {
             if (!isEven(i)) {
-                string += "\n+--+--+--+--+--+--+--+--+";
+                string += "\n  +--+--+--+--+--+--+--+--+";
             }
             else {
-                string += "\n";
+                string += "\n" + i / 2 + " ";
                 int y = (i - 1) / 2;
                 for (int j = 0; j < Constants.WIDTH * 2 + 1; j++) {
                     if (isEven(j)) {
@@ -147,6 +151,7 @@ public class Board {
                 }
             }
         }
+        string += "\n    A  B  C  D  E  F  G  H";
         return string;
     }
     
@@ -168,16 +173,30 @@ public class Board {
     }
 
 
+    /**
+     * Checks if there is a token at the target location.
+     */
     public boolean hasTokenAt(Point target) {
         return getTokenAt(target) != null;
     }
 
 
+    /**
+     * Getter for game tokens.
+     * 
+     * @return game tokens.
+     */
     public ArrayList<Token> getTokens() {
         return this.gameTokens;
     }
 
 
+    /**
+     * 
+     * 
+     * @param team
+     * @return
+     */
     public Token getKing(Team team) {
         return (team == Team.WHITE) ? this.whiteKing : this.blackKing;
     }

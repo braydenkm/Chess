@@ -45,7 +45,6 @@ public class Controller {
         }
         chosenToken.move(playerChoice.getTarget());
         model.toggleActivePlayer();
-        view.displayMessage("Moved token.");
     }
 
 

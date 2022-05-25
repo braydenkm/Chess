@@ -33,17 +33,15 @@ public class Queen extends Token {
             return false;
         }
 
-        boolean sameColumn = location.isSameColumn(target);
-        boolean sameRow = location.isSameRow(target);
-        
-        if (sameColumn || sameRow) {
-            return true;
-        }
-        if (location.isSameDiagonal(target)) {
-            return true;
-        }
+        return  location.isSameColumn(target)   ||
+                location.isSameRow(target)      ||
+                location.isSameDiagonal(target);
+    }
 
-        return false;
+
+    @Override
+    protected boolean isBlockedTowards(Point target) {
+        return board.hasTokensBetweenPoints(location, target);
     }
     
 

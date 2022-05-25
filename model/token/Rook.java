@@ -29,18 +29,17 @@ public class Rook extends Token {
         if (!target.isInBounds()) {
             return false;
         }
-        if (this.isBlockedTowards(target)) {
+        if (isBlockedTowards(target)) {
             return false;
         }
 
-        boolean sameColumn = location.isSameColumn(target);
-        boolean sameRow = location.isSameRow(target);
-        
-        if (sameColumn || sameRow) {
-            return true;
-        }
+        return location.isSameColumn(target) || location.isSameRow(target);
+    }
 
-        return false;
+
+    @Override
+    protected boolean isBlockedTowards(Point target) {
+        return board.hasTokensBetweenPoints(location, target);
     }
     
 
