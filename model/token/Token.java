@@ -43,9 +43,8 @@ public abstract class Token {
 
 
     /**
-     * Attempt to move this token to the target location. Performs checks
-     * to see if a valid move before calling a helper function to perform
-     * the move.
+     * Move this token to the target location. If there is a token at the
+     * target location, remove it.
      * 
      * @param   target  the target location for this token to move to.
      */
@@ -151,7 +150,7 @@ public abstract class Token {
      *                  will put this team into checkmate.
      *                  false otherwise.
      */
-    protected boolean willBeInCheck(Point target) {
+    public boolean putsTeamInCheck(Point target) {
         Point startingLocation = location;
         Token tokenAtTarget = board.getTokenAt(target);
         boolean targetTileEmpty = tokenAtTarget == null;
@@ -172,7 +171,7 @@ public abstract class Token {
             if (token == tokenAtTarget) {
                 continue;
             }
-            if (!token.isValidMove(thisTeamKing.getLocation())) {
+            if (token.isValidMove(thisTeamKing.getLocation())) {
                 inCheck = true;
                 break;
             }

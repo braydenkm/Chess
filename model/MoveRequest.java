@@ -1,10 +1,10 @@
 package model;
-public class Pair {
+public class MoveRequest {
 
   private Point source;
   private Point target;
 
-  public Pair(Point source, Point target) {
+  public MoveRequest(Point source, Point target) {
     this.source = source;
     this.target = target;
   }

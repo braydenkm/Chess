@@ -29,9 +29,6 @@ public class King extends Token {
         if (!target.isInBounds()) {
             return false;
         }
-        if (willBeInCheck(target)) {
-            return false;
-        }
 
         int xDistance = location.xDistanceTo(target);
         int yDistance = location.yDistanceTo(target);

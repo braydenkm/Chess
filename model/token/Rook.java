@@ -32,9 +32,6 @@ public class Rook extends Token {
         if (this.isBlockedTowards(target)) {
             return false;
         }
-        if (this.willBeInCheck(target)) {
-            return false;
-        }
 
         boolean sameColumn = location.isSameColumn(target);
         boolean sameRow = location.isSameRow(target);

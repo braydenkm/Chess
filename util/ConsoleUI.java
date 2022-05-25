@@ -1,20 +1,16 @@
 package util;
 
-import java.util.Scanner;
-
 import model.Point;
-import model.Pair;
+import model.MoveRequest;
 
 public class ConsoleUI {
   
-  public static Pair getTurnRequest() {
-    Scanner scanner = new Scanner(System.in);
+  public static MoveRequest getTurnRequest() {
     System.out.print("Token at: ");
-    Point sourceTile = ConsoleUI.stringToPoint(scanner.nextLine());
+    Point sourceTile = ConsoleUI.stringToPoint(System.console().readLine());
     System.out.print("Move to: ");
-    Point targetTile = ConsoleUI.stringToPoint(scanner.nextLine());
-    scanner.close();
-    return new Pair(sourceTile, targetTile);
+    Point targetTile = ConsoleUI.stringToPoint(System.console().readLine());
+    return new MoveRequest(sourceTile, targetTile);
   }
 
 
@@ -22,7 +18,7 @@ public class ConsoleUI {
     string = string.toUpperCase().replaceAll("\\s", "");
     char[] coords = string.toCharArray();
     Integer x = coords[0] - 65;
-    Integer y = Character.getNumericValue(coords[1]);
+    Integer y = Character.getNumericValue(coords[1]) - 1;
     return new Point(x, y);
   }
 }

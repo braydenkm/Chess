@@ -30,9 +30,6 @@ public class Knight extends Token {
         if (!target.isInBounds()) {
             return false;
         }
-        if (willBeInCheck(target)) {
-            return false;
-        }
 
         return false;
     }

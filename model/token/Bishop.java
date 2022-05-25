@@ -32,9 +32,6 @@ public class Bishop extends Token {
         if (isBlockedTowards(target)) {
             return false;
         }
-        if (willBeInCheck(target)) {
-            return false;
-        }
         
         if (getLocation().isSameDiagonal(target)) {
             return true;

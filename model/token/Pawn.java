@@ -44,9 +44,6 @@ public class Pawn extends Token {
         if (isBlockedTowards(target)) {
             return false;
         }
-        if (willBeInCheck(target)) {
-            return false;
-        }
         
         boolean sameColumn = location.isSameColumn(target);
         boolean singleTileMove = location.yDistanceTo(target) == 1;
@@ -121,39 +118,5 @@ public class Pawn extends Token {
      */
     private boolean isDoubleTileMove(Point target) {
         return location.yDistanceTo(target) == 2;
-    }
-
-
-    // @Override
-    protected ArrayList<Point> possibleMoves() {
-        int x = location.getX();
-        int y = location.getY();
-        int yMoveForward = (isWhite()) ? y + 1 : y - 1;
-        int yMoveForwardTwo = (isWhite()) ? y + 2 : y - 2;
-        ArrayList<Point> possibleMoves = new ArrayList<>();
-
-        possibleMoves.add(new Point(x, yMoveForward));
-
-        if (firstMove) {
-            possibleMoves.add(new Point(x, yMoveForwardTwo));
-        }
-
-        Point diagonalLeft = new Point(x - 1, yMoveForward);
-        Point diagonalRight = new Point(x + 1, yMoveForward);
-        if (board.hasTokenAt(diagonalLeft)) {
-            possibleMoves.add(diagonalLeft);
-        }
-        if (board.hasTokenAt(diagonalRight)) {
-            possibleMoves.add(diagonalRight);
-        }
-
-        ArrayList<Point> validMoves = new ArrayList<>();
-        for (Point point : possibleMoves) {
-            if (isValidMove(point)) {
-                validMoves.add(point);
-            }
-        }
-
-        return possibleMoves;
     }
 }

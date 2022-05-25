@@ -32,9 +32,6 @@ public class Queen extends Token {
         if (isBlockedTowards(target)) {
             return false;
         }
-        if (willBeInCheck(target)) {
-            return false;
-        }
 
         boolean sameColumn = location.isSameColumn(target);
         boolean sameRow = location.isSameRow(target);

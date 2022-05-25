@@ -4,7 +4,7 @@ import view.View;
 
 import model.Model;
 import model.Point;
-import model.Pair;
+import model.MoveRequest;
 import model.token.Token;
 import util.ConsoleUI;
 
@@ -28,17 +28,24 @@ public class Controller {
 
     
     public void performNextTurn() {
-        Pair playerChoice = getChoice();
+        view.displayMessage(model.getActivePlayer().toString() + "'s turn");
+        MoveRequest playerChoice = getChoice();
         Token chosenToken = model.getBoard().getTokenAt(playerChoice.getSource());
         if (chosenToken.getTeam() != model.getActivePlayer() ) {
             view.displayMessage("Cannot move the opponent's tokens.");
             return;
         }
-        if (chosenToken.isValidMove(playerChoice.getTarget())) {
-            chosenToken.move(playerChoice.getTarget());
-            view.displayMessage("Moved token.");
-
+        if (!chosenToken.isValidMove(playerChoice.getTarget())) {
+            view.displayMessage("That is not a valid move.");
+            return;
         }
+        if (chosenToken.putsTeamInCheck(playerChoice.getTarget())) {
+            view.displayMessage("Cannot move into check.");
+            return;
+        }
+        chosenToken.move(playerChoice.getTarget());
+        model.toggleActivePlayer();
+        view.displayMessage("Moved token.");
     }
 
 
@@ -49,7 +56,7 @@ public class Controller {
     }
 
 
-    public Pair getChoice() {
+    public MoveRequest getChoice() {
         return ConsoleUI.getTurnRequest();
     }
 
