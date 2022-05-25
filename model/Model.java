@@ -2,30 +2,58 @@ package model;
 
 import globals.Team;
 
+
+/**
+ * Model class receives orders from the Controller to update the data contained
+ * inside this model.
+ * This is part of the MVC Architecture.
+ */
 public class Model {
-  
-  private Board board;
-  private Team activePlayer;
+
+    /**
+     * Board contains the tokens of this chess game.
+     */
+    private Board board;
+
+    /**
+     * Keeps track of whose turn it is.
+     */
+    private Team activePlayer;
 
 
-
-  public Model() {
-    this.board = new Board();
-    this.activePlayer = Team.WHITE;
-  }
-
-
-  public Board getBoard() {
-    return this.board;
-  }
+    /**
+     * Default Constructor for Model.
+     */
+    public Model() {
+        this.board = new Board();
+        this.activePlayer = Team.WHITE;
+    }
 
 
-  public Team getActivePlayer() {
-    return this.activePlayer;
-  }
+    /**
+     * Getter for board.
+     * 
+     * @return  game board.
+     */
+    public Board getBoard() {
+        return this.board;
+    }
 
 
-  public void toggleActivePlayer() {
-    activePlayer = (activePlayer == Team.WHITE) ? Team.BLACK : Team.WHITE;
-  }
+    /**
+     * Getter for the active player.
+     * 
+     * @return  the team whose turn it is.
+     */
+    public Team getActivePlayer() {
+        return this.activePlayer;
+    }
+
+
+    /**
+     * Set the active player to the other team.
+     */
+    public void toggleActivePlayer() {
+        activePlayer = (activePlayer == Team.WHITE) ? Team.BLACK : Team.WHITE;
+    }
 }

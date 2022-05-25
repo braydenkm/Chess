@@ -1,20 +1,41 @@
 package controller;
 
 import view.View;
-
 import model.Model;
-import model.Point;
 import model.MoveRequest;
 import model.token.Token;
 import util.ConsoleUI;
 
+
+/**
+ * Controller class sends orders to the Model to make changes, and tells
+ * the View when to update the UI.
+ * This is part of the MVC Architecture.
+ */
 public class Controller {
     
+    /**
+     * Model containing all the data for chess program.
+     */
     private Model model;
+
+    /**
+     * View containing all the UI logic for chess program.
+     */
     private View view;
+
+    /**
+     * Flag for keeping program running.
+     */
     private boolean running;
     
     
+    /**
+     * Default Constructor for Controller.
+     * 
+     * @param   model   Model for MVC.
+     * @param   view    View for MVC.
+     */
     public Controller(Model model, View view) {
         this.model = model;
         this.view = view;
@@ -22,11 +43,17 @@ public class Controller {
     }
 
 
+    /**
+     * Command the View to update the UI.
+     */
     public void updateView() {
         view.display();
     }
 
     
+    /**
+     * Interact with the user to take their turn moving a token.
+     */
     public void performNextTurn() {
         view.displayMessage(model.getActivePlayer().toString() + "'s turn");
         MoveRequest playerChoice = getChoice();
@@ -48,18 +75,21 @@ public class Controller {
     }
 
 
-    public void foo() {
-        Token token = model.getBoard().getTokenAt(new Point(0, 1));
-        System.out.println(token.toString());
-        token.move(new Point(0, 2));
-    }
-
-
+    /**
+     * Interact with the user to get their choice of token and target location.
+     * 
+     * @return  MoveRequest that contains token to move and target location.
+     */
     public MoveRequest getChoice() {
         return ConsoleUI.getTurnRequest();
     }
 
 
+    /**
+     * Check if the flag for running program is set.
+     * 
+     * @return  running flag.
+     */
     public boolean isRunning() {
         return running;
     }

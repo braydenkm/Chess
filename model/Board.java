@@ -192,10 +192,10 @@ public class Board {
 
 
     /**
+     * Returns king for the given team.
      * 
-     * 
-     * @param team
-     * @return
+     * @param   team    team the king to return is sided with.
+     * @return          king token for the chosen team.
      */
     public Token getKing(Team team) {
         return (team == Team.WHITE) ? this.whiteKing : this.blackKing;

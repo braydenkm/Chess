@@ -108,25 +108,6 @@ public abstract class Token {
     public boolean isAtPoint(Point target) {
         return location.isAtSameLocationAs(target);
     }
-
-
-    /**
-     * Return the information contained inside this token into a String format.
-     * 
-     * @return  the information contained within this token as a String.
-     */
-    @Override
-    public String toString() {
-        return this.getClass() + " " + location.toString() + " " + team;
-    }
-    
-
-    // Return this token as a short string for displaying on the game board.
-    // Planned to be removed when graphics are added.
-    public String toStringShort() {
-        String team = (this.team == Team.WHITE) ? "w" : "b" ;
-        return team + this.characterRepresentation();
-    }
     
     
     /**
@@ -182,7 +163,6 @@ public abstract class Token {
         if (!targetTileEmpty) {
             tokenAtTarget.setLocation(target);
         }
-
         return inCheck;
     }
 
@@ -228,11 +208,6 @@ public abstract class Token {
     }
 
 
-    // Return the token as represented by a single character.
-    // Planned to be removed when graphics are added.
-    protected abstract String characterRepresentation();
-    
-    
     /**
      * Move this token to the target location.
      * 
@@ -241,4 +216,28 @@ public abstract class Token {
     private void setLocation(Point target) {
         this.location = target;
     }
+
+    
+    /**
+     * Return the information contained inside this token into a String format.
+     * 
+     * @return  the information contained within this token as a String.
+     */
+    @Override
+    public String toString() {
+        return this.getClass() + " " + location.toString() + " " + team;
+    }
+    
+
+    // Return this token as a short string for displaying on the game board.
+    // Planned to be removed when graphics are added.
+    public String toStringShort() {
+        String team = (this.team == Team.WHITE) ? "w" : "b" ;
+        return team + this.characterRepresentation();
+    }
+
+
+    // Return the token as represented by a single character.
+    // Planned to be removed when graphics are added.
+    protected abstract String characterRepresentation();
 }

@@ -2,19 +2,44 @@ package view;
 
 import model.Model;
 
+
+/**
+ * View class receives orders from the Controller to update the UI displayed
+ * to the user.
+ * This is part of the MVC Architecture.
+ */
 public class View {
 
-  private Model model;
+    /**
+     * Model of the data to display.
+     */
+    private Model model;
 
-  public View(Model model) {
-    this.model = model;
-  }
 
-  public void display() {
-    model.getBoard().display();
-  }
+    /**
+     * Default Constructor for View.
+     * 
+     * @param   model   contains the data for the view to display.
+     */
+    public View(Model model) {
+        this.model = model;
+    }
 
-  public void displayMessage(String message) {
-    System.out.println(message);
-  }
+    
+    /**
+     * Display the model to the user.
+     */
+    public void display() {
+        model.getBoard().display();
+    }
+
+    
+    /**
+     * Display text the the user.
+     * 
+     * @param   message text to display to user.
+     */
+    public void displayMessage(String message) {
+        System.out.println(message);
+    }
 }
