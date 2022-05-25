@@ -25,27 +25,32 @@ public class King extends Token {
 
 
     @Override
-    protected boolean isValidMove(Point target) {
-        
+    public boolean isValidMove(Point target) {
         if (!target.isInBounds()) {
             return false;
         }
-        if (this.willBeInCheckmate(target)) {
+        if (willBeInCheck(target)) {
             return false;
         }
+
+        int xDistance = location.xDistanceTo(target);
+        int yDistance = location.yDistanceTo(target);
+        if (xDistance <= 1 && yDistance <= 1) {
+            return true;
+        }
         
-        return true;
+        return false;
     }
-    
-    
+
+
     @Override
-    protected boolean willBeInCheckmate(Point target) {
+    protected boolean isBlockedTowards(Point target) {
         return false;
     }
     
 
     @Override
-    protected String toChar() {
+    protected String characterRepresentation() {
         return "K";
     }
 }

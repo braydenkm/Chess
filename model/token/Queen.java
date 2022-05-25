@@ -25,39 +25,33 @@ public class Queen extends Token {
 
 
     @Override
-    protected boolean isValidMove(Point target) {
-        
+    public boolean isValidMove(Point target) {        
         if (!target.isInBounds()) {
             return false;
         }
-        if (this.isBlockedTowards(target)) {
+        if (isBlockedTowards(target)) {
             return false;
         }
+        if (willBeInCheck(target)) {
+            return false;
+        }
+
+        boolean sameColumn = location.isSameColumn(target);
+        boolean sameRow = location.isSameRow(target);
         
-        if (!target.isSameColumn(this.location)) {
-            return false;
+        if (sameColumn || sameRow) {
+            return true;
         }
-        if (target.yDistanceTo(this.location) != 1) {
-            return false;
+        if (location.isSameDiagonal(target)) {
+            return true;
         }
-        return true;
-    }
-    
-    
-    @Override
-    protected boolean isBlockedTowards(Point target) {
-        return board.hasTokensBetweenPoints(this.getLocation(), target);
-    }
-    
-    
-    @Override
-    protected boolean willBeInCheckmate(Point target) {
+
         return false;
     }
     
 
     @Override
-    protected String toChar() {
+    protected String characterRepresentation() {
         return "Q";
     }
 }

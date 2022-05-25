@@ -2,6 +2,9 @@ package model.token;
 
 import model.Board;
 import model.Point;
+
+import java.util.ArrayList;
+
 import globals.Team;
 
 
@@ -31,29 +34,33 @@ public class Pawn extends Token {
 
 
     @Override
-    protected boolean isValidMove(Point target) {
-        boolean sameColumn = this.getLocation().isSameColumn(target);
-        boolean singleTileMove = this.getLocation().yDistanceTo(target) == 1;
-        boolean singleDiagonalMove = singleTileMove && this.getLocation().xDistanceTo(target) == 1;
-        
+    public boolean isValidMove(Point target) {
         if (!target.isInBounds()) {
             return false;
         }
-        if (!this.isMovingForward(target)) {
+        if (!isMovingForward(target)) {
             return false;
         }
-        if (this.isBlockedTowards(target)) {
+        if (isBlockedTowards(target)) {
+            return false;
+        }
+        if (willBeInCheck(target)) {
             return false;
         }
         
-        if (this.firstMove && this.isDoubleTileMove(target) && 
-            sameColumn && !this.hasOpponentAt(target)) {
+        boolean sameColumn = location.isSameColumn(target);
+        boolean singleTileMove = location.yDistanceTo(target) == 1;
+        boolean singleDiagonalMove = singleTileMove && location.xDistanceTo(target) == 1;
+        boolean opponentAtTarget = hasOpponentAt(target);
+
+        if (firstMove && isDoubleTileMove(target) && 
+            sameColumn && !opponentAtTarget) {
             return true;
         }
-        if (sameColumn && singleTileMove && !this.hasOpponentAt(target)) {
+        if (sameColumn && singleTileMove && !opponentAtTarget) {
             return true;
         }
-        if (singleDiagonalMove && this.hasOpponentAt(target)) {
+        if (singleDiagonalMove && opponentAtTarget) {
             return true;
         }
         return false;
@@ -62,27 +69,21 @@ public class Pawn extends Token {
     
     @Override
     protected boolean isBlockedTowards(Point target) {
-        if (!this.isDoubleTileMove(target)) {
+        if (!isDoubleTileMove(target)) {
             return false;
         }
-        return board.hasTokensBetweenPoints(this.getLocation(), target);
+        return board.hasTokensBetweenPoints(location, target);
     }
-    
-    
-    @Override
-    protected boolean willBeInCheckmate(Point target) {
-        return false;
-    }
-    
+        
     
     @Override
     protected void postMoveActions() {
-        this.firstMove = false;
+        firstMove = false;
     }
 
 
     @Override
-    protected String toChar() {
+    protected String characterRepresentation() {
         return "P";
     }
 
@@ -98,11 +99,11 @@ public class Pawn extends Token {
      *                  false otherwise.
      */
     private boolean isMovingForward(Point target) {
-        int differenceY = target.getY() - this.getLocation().getY();
-        if (this.isWhite() && differenceY >= 0) {
+        int differenceY = target.getY() - location.getY();
+        if (isWhite() && differenceY >= 0) {
             return true;
         }
-        if (!this.isWhite() && differenceY <= 0) {
+        if (!isWhite() && differenceY <= 0) {
             return true;
         }
         return false;
@@ -119,6 +120,40 @@ public class Pawn extends Token {
      *                  false otherwise.
      */
     private boolean isDoubleTileMove(Point target) {
-        return this.getLocation().yDistanceTo(target) == 2;
+        return location.yDistanceTo(target) == 2;
+    }
+
+
+    // @Override
+    protected ArrayList<Point> possibleMoves() {
+        int x = location.getX();
+        int y = location.getY();
+        int yMoveForward = (isWhite()) ? y + 1 : y - 1;
+        int yMoveForwardTwo = (isWhite()) ? y + 2 : y - 2;
+        ArrayList<Point> possibleMoves = new ArrayList<>();
+
+        possibleMoves.add(new Point(x, yMoveForward));
+
+        if (firstMove) {
+            possibleMoves.add(new Point(x, yMoveForwardTwo));
+        }
+
+        Point diagonalLeft = new Point(x - 1, yMoveForward);
+        Point diagonalRight = new Point(x + 1, yMoveForward);
+        if (board.hasTokenAt(diagonalLeft)) {
+            possibleMoves.add(diagonalLeft);
+        }
+        if (board.hasTokenAt(diagonalRight)) {
+            possibleMoves.add(diagonalRight);
+        }
+
+        ArrayList<Point> validMoves = new ArrayList<>();
+        for (Point point : possibleMoves) {
+            if (isValidMove(point)) {
+                validMoves.add(point);
+            }
+        }
+
+        return possibleMoves;
     }
 }

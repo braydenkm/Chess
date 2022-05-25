@@ -42,7 +42,7 @@ public class Point {
      *                  false otherwise.
      */
     public boolean isSameColumn(Point target) {
-        return this.getX() == target.getX();
+        return x == target.getX();
     }
     
     
@@ -55,7 +55,7 @@ public class Point {
      *                  false otherwise.
      */
     public boolean isSameRow(Point target) {
-        return this.getY() == target.getY();
+        return y == target.getY();
     }
     
     
@@ -69,8 +69,8 @@ public class Point {
      *                  false otherwise.
      */
     public boolean isSameDiagonal(Point target) {
-        int differenceX = this.xDistanceTo(target);
-        int differenceY = this.yDistanceTo(target);
+        int differenceX = xDistanceTo(target);
+        int differenceY = yDistanceTo(target);
         return differenceX == differenceY;
     }
     
@@ -82,8 +82,8 @@ public class Point {
      * @return  true if this point is within the boundaries.
      */
     public boolean isInBounds() {
-        boolean inBoundsX = 0 <= this.getX() && this.getX() <= Constants.WIDTH;
-        boolean inBoundsY = 0 <= this.getY() && this.getY() <= Constants.HEIGHT;
+        boolean inBoundsX = 0 <= x && x < Constants.WIDTH;
+        boolean inBoundsY = 0 <= y && y < Constants.HEIGHT;
         return inBoundsX && inBoundsY;
     }
     
@@ -97,7 +97,7 @@ public class Point {
      *                  false otherwise.
      */
     public boolean isAtSameLocationAs(Point target) {
-        return this.getX() == target.getX() && this.getY() == target.getY();
+        return isSameRow(target) && isSameColumn(target);
     }
 
 
@@ -108,7 +108,7 @@ public class Point {
      * @return          the y distance to the target point.
      */
     public int yDistanceTo(Point target) {
-        return Math.abs(this.getY() - target.getY());
+        return Math.abs(y - target.getY());
     }
     
     
@@ -119,7 +119,7 @@ public class Point {
      * @return          the x distance to the target point.
      */
     public int xDistanceTo(Point target) {
-        return Math.abs(this.getX() - target.getX());
+        return Math.abs(x - target.getX());
     }
 
 
@@ -129,7 +129,7 @@ public class Point {
      * @return x-coordinate for this token.
      */
     public int getX() {
-        return x;
+        return this.x;
     }
 
 
@@ -139,12 +139,12 @@ public class Point {
      * @return y-coordinate for this token.
      */
     public int getY() {
-        return y;
+        return this.y;
     }
     
 
     @Override
     public String toString() {
-        return "(" + this.getX() + ", " + this.getY() + ")";
+        return "(" + x + ", " + y + ")";
     }
 }

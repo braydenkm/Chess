@@ -18,16 +18,34 @@ public class Board {
      * List containing all the tokens used in the game.
      */
     private ArrayList<Token> gameTokens;
+    private Token whiteKing;
+    private Token blackKing;
 
 
     /**
      * Default Constructor for Board.
      */
     public Board() {
-        this.gameTokens = initializeGameTokens();
+        debugGameTokens();
+        // initializeGameTokens();
     }
     
     
+    private void debugGameTokens() {
+        ArrayList<Token> tokens = new ArrayList<>();
+        TokenFactory tokenMaker = new TokenFactory(this);
+
+        whiteKing = tokenMaker.build(TokenType.KING, Team.WHITE, new Point(0, 0));
+        blackKing = tokenMaker.build(TokenType.KING, Team.BLACK, new Point(0, 7));
+        tokens.add(whiteKing);
+        tokens.add(blackKing);
+        tokens.add(tokenMaker.build(TokenType.ROOK, Team.WHITE, new Point(0, 1)));
+        tokens.add(tokenMaker.build(TokenType.ROOK, Team.BLACK, new Point(0, 3)));
+
+        gameTokens = tokens;
+    }
+
+
     /**
      * Check if there are any tokens between two tiles of the gameboard.
      * 
@@ -41,6 +59,7 @@ public class Board {
         if (!source.isSameRow(target) && !source.isSameColumn(target) && !source.isSameDiagonal(target)) {
             // Throw invalid parameters exception.
             System.out.println("ERROR: This should be an exception inside Board.java");
+            return true;
         }
         
         ArrayList<Point> possibleTiles = new ArrayList<>();
@@ -76,7 +95,7 @@ public class Board {
         }
 
         for (Point point : possibleTiles) {
-            for (Token token : this.gameTokens) {
+            for (Token token : gameTokens) {
                 if (token.getLocation().isAtSameLocationAs(point)) {
                     return true;
                 }
@@ -147,6 +166,21 @@ public class Board {
         }
         return null;
     }
+
+
+    public boolean hasTokenAt(Point target) {
+        return getTokenAt(target) != null;
+    }
+
+
+    public ArrayList<Token> getTokens() {
+        return this.gameTokens;
+    }
+
+
+    public Token getKing(Team team) {
+        return (team == Team.WHITE) ? this.whiteKing : this.blackKing;
+    }
     
     
     /**
@@ -154,8 +188,8 @@ public class Board {
      * 
      * @param   token   token to be added to the list of game tokens.
      */
-    public void placeToken(Token token) {
-        this.gameTokens.add(token);
+    public void addToken(Token token) {
+        gameTokens.add(token);
     }
     
     
@@ -180,15 +214,22 @@ public class Board {
      * 
      * @return  the game tokens for each team for a standard game of chess.
      */
-    private ArrayList<Token> initializeGameTokens() {
+    private void initializeGameTokens() {
         ArrayList<Token> allTokens = initializeTeamTokens(Team.WHITE);
         ArrayList<Token> blackTokens = initializeTeamTokens(Team.BLACK);
         for (Token token : blackTokens) {
             allTokens.add(token);
         }
-        return allTokens;
-    }
 
+        TokenFactory tokenMaker = new TokenFactory(this);
+        whiteKing = tokenMaker.build(TokenType.KING, Team.WHITE, new Point(4, 0));
+        blackKing = tokenMaker.build(TokenType.KING, Team.BLACK, new Point(3, Constants.HEIGHT - Constants.OFFSET));
+        allTokens.add(whiteKing);
+        allTokens.add(blackKing);
+
+        gameTokens = allTokens;
+    }
+ 
 
     /**
      * Create the game tokens on each team for a standard game of chess.
@@ -216,12 +257,11 @@ public class Board {
 
         tokens.add(tokenMaker.build(TokenType.KNIGHT, team, new Point(2, backLineY)));
         tokens.add(tokenMaker.build(TokenType.KNIGHT, team, new Point(Constants.WIDTH - Constants.OFFSET - 2, backLineY)));
-        
-        int kingX  = (isWhiteTeam) ? 3 : 4;
-        int queenX = (isWhiteTeam) ? 4 : 3; 
-        tokens.add(tokenMaker.build(TokenType.QUEEN,  team, new Point(kingX,  backLineY)));
-        tokens.add(tokenMaker.build(TokenType.KING,   team, new Point(queenX, backLineY)));
 
+        
+        int queenX = (isWhiteTeam) ? 3 : 4; 
+        tokens.add(tokenMaker.build(TokenType.QUEEN,  team, new Point(queenX,  backLineY)));
+    
         return tokens;
     }
 

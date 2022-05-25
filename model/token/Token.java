@@ -23,7 +23,7 @@ public abstract class Token {
     protected Point location;
 
     /**
-     * 
+     * The board this token is playing on.
      */
     protected Board board;
 
@@ -50,17 +50,11 @@ public abstract class Token {
      * @param   target  the target location for this token to move to.
      */
     public void move(Point target) {
-        if (this.isValidMove(target)) {
-            if (this.hasOpponentAt(target)) {
-                board.removeTokenAt(target);
-            }
-            this.moveToLocation(target);
+        if (hasOpponentAt(target)) {
+            board.removeTokenAt(target);
         }
-        else {
-            System.out.println("  Move to " + target.toString() +
-                               " is not valid.");
-        }
-        System.out.println(this.toString());
+        setLocation(target);
+        postMoveActions();
     }
     
     
@@ -83,14 +77,25 @@ public abstract class Token {
         return this.team;   
     }
 
-        /**
+
+    /**
+    * Getter for this token's board.
+    * 
+    * @return  board this token is playing on.
+    */
+    public Board getBoard() {
+        return this.board;
+    }
+
+
+    /**
      * Check if this token's team is white.
      * 
      * @return  true if this token's team is white.
      *          false if it is black.
      */
     public boolean isWhite() {
-        return this.team == Team.WHITE;
+        return team == Team.WHITE;
     }
 
 
@@ -102,7 +107,7 @@ public abstract class Token {
      *                  false otherwise.
      */
     public boolean isAtPoint(Point target) {
-        return this.getLocation().isAtSameLocationAs(target);
+        return location.isAtSameLocationAs(target);
     }
 
 
@@ -113,7 +118,7 @@ public abstract class Token {
      */
     @Override
     public String toString() {
-        return this.getClass() + " " + this.getLocation().toString() + " " + this.team;
+        return this.getClass() + " " + location.toString() + " " + team;
     }
     
 
@@ -121,7 +126,7 @@ public abstract class Token {
     // Planned to be removed when graphics are added.
     public String toStringShort() {
         String team = (this.team == Team.WHITE) ? "w" : "b" ;
-        return team + this.toChar();
+        return team + this.characterRepresentation();
     }
     
     
@@ -134,7 +139,7 @@ public abstract class Token {
      *                  given token.
      *                  false otherwise.
      */
-    protected abstract boolean isValidMove(Point target);
+    public abstract boolean isValidMove(Point target);
 
 
     /**
@@ -146,7 +151,41 @@ public abstract class Token {
      *                  will put this team into checkmate.
      *                  false otherwise.
      */
-    protected abstract boolean willBeInCheckmate(Point target);
+    protected boolean willBeInCheck(Point target) {
+        Point startingLocation = location;
+        Token tokenAtTarget = board.getTokenAt(target);
+        boolean targetTileEmpty = tokenAtTarget == null;
+        Token thisTeamKing = board.getKing(team);
+
+        // Move target off the board temporarily, move this piece to target.
+        if (!targetTileEmpty) {
+            tokenAtTarget.setLocation(new Point(-1, -1));
+        }
+        setLocation(target);
+
+        // Check opponent tokens for check.
+        boolean inCheck = false;
+        for (Token token : board.getTokens()) {
+            if (token.getTeam() == team) {
+                continue;
+            }
+            if (token == tokenAtTarget) {
+                continue;
+            }
+            if (!token.isValidMove(thisTeamKing.getLocation())) {
+                inCheck = true;
+                break;
+            }
+        }
+
+        // Reset both token's original locations.
+        setLocation(startingLocation);
+        if (!targetTileEmpty) {
+            tokenAtTarget.setLocation(target);
+        }
+
+        return inCheck;
+    }
 
     
     /**
@@ -169,7 +208,7 @@ public abstract class Token {
      *                  false otherwise.
      */
     protected boolean isBlockedTowards(Point target) {
-        return false;
+        return board.hasTokensBetweenPoints(location, target);
     }
     
     
@@ -186,23 +225,21 @@ public abstract class Token {
         if (targetToken == null) {
             return false;
         }
-        return this.getTeam() != targetToken.getTeam();
+        return team != targetToken.getTeam();
     }
 
 
     // Return the token as represented by a single character.
     // Planned to be removed when graphics are added.
-    protected abstract String toChar();
+    protected abstract String characterRepresentation();
     
     
     /**
-     * Move this token to the target location before calling another
-     * function to perform post move actions.
+     * Move this token to the target location.
      * 
      * @param   target  the target location for this token to move to.
      */
-    private void moveToLocation(Point target) {
+    private void setLocation(Point target) {
         this.location = target;
-        postMoveActions();
     }
 }

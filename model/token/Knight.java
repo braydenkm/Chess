@@ -25,30 +25,27 @@ public class Knight extends Token {
 
 
     @Override
-    protected boolean isValidMove(Point target) {
+    public boolean isValidMove(Point target) {
         
         if (!target.isInBounds()) {
             return false;
         }
-        
-        if (!target.isSameColumn(this.location)) {
+        if (willBeInCheck(target)) {
             return false;
         }
-        if (target.yDistanceTo(this.location) != 1) {
-            return false;
-        }
-        return true;
+
+        return false;
     }
-    
-    
+
+
     @Override
-    protected boolean willBeInCheckmate(Point target) {
+    protected boolean isBlockedTowards(Point target) {
         return false;
     }
     
 
     @Override
-    protected String toChar() {
+    protected String characterRepresentation() {
         return "N";
     }
 }

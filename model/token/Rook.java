@@ -25,41 +25,30 @@ public class Rook extends Token {
 
 
     @Override
-    protected boolean isValidMove(Point target) {
-        boolean sameColumn = this.getLocation().isSameColumn(target);
-        boolean sameRow = this.getLocation().isSameRow(target);
-        
+    public boolean isValidMove(Point target) {
         if (!target.isInBounds()) {
             return false;
         }
         if (this.isBlockedTowards(target)) {
             return false;
         }
+        if (this.willBeInCheck(target)) {
+            return false;
+        }
+
+        boolean sameColumn = location.isSameColumn(target);
+        boolean sameRow = location.isSameRow(target);
         
-        if (sameColumn && !sameRow) {
+        if (sameColumn || sameRow) {
             return true;
         }
-        if (!sameColumn && sameRow) {
-            return true;
-        }
-        return false;
-    }
-    
-    
-    @Override
-    protected boolean isBlockedTowards(Point target) {
-        return board.hasTokensBetweenPoints(this.getLocation(), target);
-    }
-    
-    
-    @Override
-    protected boolean willBeInCheckmate(Point target) {
+
         return false;
     }
     
 
     @Override
-    protected String toChar() {
+    protected String characterRepresentation() {
         return "R";
     }
 }
