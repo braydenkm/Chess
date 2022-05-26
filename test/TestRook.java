@@ -14,7 +14,7 @@ import model.token.Token;
 import model.token.TokenFactory;
 
 public class TestRook {
-    
+
     @Test
     public void shouldMakeWhiteRookAtOrigin() {
         TokenFactory tokenFactory = new TokenFactory(new Board());
@@ -62,6 +62,19 @@ public class TestRook {
         Point targetLocation = new Point(7, 0);
         rook.move(targetLocation);
         assertEquals(targetLocation, rook.getLocation());
+    }
+
+
+    @Test
+    public void shouldKillBlackRookWithWhiteRook() {
+        TokenFactory tokenFactory = new TokenFactory(new Board());
+        Token whiteRook = tokenFactory.build(TokenType.ROOK, Team.WHITE, new Point(0, 0));
+        Point blackSource = new Point(0, 7);
+        tokenFactory.build(TokenType.ROOK, Team.BLACK, blackSource);
+        // Need a king for black rook to determine if placing in check.
+        whiteRook.getBoard().setKing(tokenFactory.build(TokenType.KING, Team.WHITE, new Point(7, 7)));
+        whiteRook.move(blackSource);
+        assertEquals(blackSource, whiteRook.getLocation());
     }
 
 

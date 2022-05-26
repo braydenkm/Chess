@@ -56,7 +56,7 @@ public class Pawn extends Token {
     @Override
     protected boolean isBlockedTowards(Point target) {
         if (location.yDistanceTo(target) != 2) {
-            return hasOpponentAt(target);
+            return false;
         }
         return board.hasTokensBetweenPoints(location, target);
     }

@@ -93,6 +93,19 @@ public class TestPawn {
         blackPawn.move(new Point(7, 7));
         assertEquals(blackSource, blackPawn.getLocation());
     }
+
+
+    @Test
+    public void shouldKillBlackPawnWithWhitePawn() {
+        TokenFactory tokenFactory = new TokenFactory(new Board());
+        Token whitePawn = tokenFactory.build(TokenType.PAWN, Team.WHITE, new Point(0, 0));
+        Point blackSource = new Point(1, 1);
+        tokenFactory.build(TokenType.PAWN, Team.BLACK, blackSource);
+        // Need a king for black rook to determine if placing in check.
+        whitePawn.getBoard().setKing(tokenFactory.build(TokenType.KING, Team.WHITE, new Point(7, 7)));
+        whitePawn.move(blackSource);
+        assertEquals(blackSource, whitePawn.getLocation());
+    }
     
 
     @Test

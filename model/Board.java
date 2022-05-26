@@ -91,8 +91,8 @@ public class Board {
             int xSource = source.getX();
             int ySource = source.getY();
             int steps = source.xDistanceTo(target);
-            boolean isMovingRight = xSource - target.getX() > 0;
-            boolean isMovingUp    = ySource - target.getY() > 0;
+            boolean isMovingRight = target.getX() - xSource > 0;
+            boolean isMovingUp    = target.getY() - ySource> 0;
             
             for (int i = 1; i < steps; i++) {
                 int x = (isMovingRight) ? xSource + i : xSource - i;
@@ -120,8 +120,6 @@ public class Board {
     }
 
 
-    // Creates the board as a string.
-    // Planned to be replaced when graphics are added.
     @Override
     public String toString() {
         String string = "\n  +--+--+--+--+--+--+--+--+";
@@ -233,8 +231,6 @@ public class Board {
 
     /**
      * Create the game tokens on each team for a standard game of chess.
-     * 
-     * @return  the game tokens for each team for a standard game of chess.
      */
     public void setUpStandardGameTokens() {
         initializeTeamTokens(Team.WHITE);
@@ -249,8 +245,6 @@ public class Board {
      * Create the game tokens on each team for a standard game of chess.
      * 
      * @param   team    the team to create tokens for.
-     * @return          the game tokens for specified team for a standard
-     *                  game of chess.
      */
     private void initializeTeamTokens(Team team) {
         int pawnY     = (team == Team.WHITE) ? 1 : Constants.HEIGHT - Constants.OFFSET - 1;
