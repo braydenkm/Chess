@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -68,25 +69,45 @@ public class TestRook {
     @Test
     public void shouldKillBlackRookWithWhiteRook() {
         TokenFactory tokenFactory = new TokenFactory(new Board());
-        Token whiteRook = tokenFactory.build(TokenType.ROOK, Team.WHITE, new Point(0, 0));
-        Point blackSource = new Point(0, 7);
-        tokenFactory.build(TokenType.ROOK, Team.BLACK, blackSource);
-        // Need a king for black rook to determine if placing in check.
-        whiteRook.getBoard().setKing(tokenFactory.build(TokenType.KING, Team.WHITE, new Point(7, 7)));
-        whiteRook.move(blackSource);
-        assertEquals(blackSource, whiteRook.getLocation());
+        Token rook = tokenFactory.build(TokenType.ROOK, Team.WHITE, new Point(0, 0));
+        Point targetLocation = new Point(0, 7);
+        tokenFactory.build(TokenType.ROOK, Team.BLACK, targetLocation);
+        rook.move(targetLocation);
+        assertEquals(targetLocation, rook.getLocation());
     }
 
 
     @Test
-    public void shouldBlockWhiteRookMovingThroughBlackRook() {
+    public void shouldBlockRookMovingThroughToken() {
         TokenFactory tokenFactory = new TokenFactory(new Board());
-        Point whiteSource = new Point(0, 0);
-        Token whiteRook = tokenFactory.build(TokenType.ROOK, Team.WHITE, whiteSource);
-        tokenFactory.build(TokenType.ROOK, Team.BLACK, new Point(0, 3));
-        // Need a king for black rook to determine if placing in check.
-        whiteRook.getBoard().setKing(tokenFactory.build(TokenType.KING, Team.WHITE, new Point(7, 7)));
-        whiteRook.move(new Point(0, 7));
-        assertEquals(whiteSource, whiteRook.getLocation());
+        Token rook = tokenFactory.build(TokenType.ROOK, Team.WHITE, new Point(0, 0));
+        tokenFactory.build(TokenType.PAWN, Team.WHITE, new Point(0, 3));
+        Point targetLocation = new Point(0, 7);
+        rook.move(targetLocation);
+        assertNotEquals(targetLocation, rook.getLocation());
+    }
+
+
+    @Test
+    public void shouldAllowMovingToBlockCheckForKing() {
+        TokenFactory tokenFactory = new TokenFactory(new Board());
+        Token rook = tokenFactory.build(TokenType.ROOK, Team.WHITE, new Point(1, 0));
+        tokenFactory.build(TokenType.ROOK, Team.BLACK, new Point(7, 1));
+        rook.getBoard().setKing(tokenFactory.build(TokenType.KING, Team.WHITE, new Point(0, 1)));
+        Point targetLocation = new Point(1, 1);
+        rook.move(targetLocation);
+        assertEquals(targetLocation, rook.getLocation());
+    }
+
+
+    @Test
+    public void shouldPreventLeavingKingInCheck() {
+        TokenFactory tokenFactory = new TokenFactory(new Board());
+        Token rook = tokenFactory.build(TokenType.ROOK, Team.WHITE, new Point(1, 0));
+        tokenFactory.build(TokenType.ROOK, Team.BLACK, new Point(7, 0));
+        rook.getBoard().setKing(tokenFactory.build(TokenType.KING, Team.WHITE, new Point(0, 0)));
+        Point targetLocation = new Point(1, 7);
+        rook.move(targetLocation);
+        assertNotEquals(targetLocation, rook.getLocation());
     }
 }

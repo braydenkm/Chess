@@ -38,18 +38,20 @@ public class Pawn extends Token {
         if (!isMovingForward(target)) {
             return false;
         }
-        if (isBlockedTowards(target)) {
+
+        boolean blocked = isBlockedTowards(target);
+        if (blocked) {
             return false;
         }
 
         boolean sameColumn = location.isSameColumn(target);
-        boolean opponentAtTarget = hasOpponentAt(target);
+        boolean tokenAtTarget = board.hasTokenAt(target);
 
         if (location.yDistanceTo(target) == 2) {
-            return firstMove && sameColumn && !opponentAtTarget && !isBlockedTowards(target);
+            return firstMove && sameColumn && !tokenAtTarget && !blocked;
         }
-        return  (sameColumn && !opponentAtTarget) ||
-                ((location.xDistanceTo(target) == 1) && opponentAtTarget);
+        return  (sameColumn && !tokenAtTarget) ||
+                ((location.xDistanceTo(target) == 1) && hasOpponentAt(target));
     }
     
     
