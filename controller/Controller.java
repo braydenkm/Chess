@@ -5,6 +5,7 @@ import model.Model;
 import model.MoveRequest;
 import model.token.Token;
 import util.ConsoleUI;
+import util.MoveResponse;
 
 
 /**
@@ -62,15 +63,11 @@ public class Controller {
             view.displayMessage("Cannot move the opponent's tokens.");
             return;
         }
-        if (!chosenToken.isValidMove(playerChoice.getTarget())) {
-            view.displayMessage("That is not a valid move.");
+        MoveResponse response = chosenToken.move(playerChoice.getTarget());
+        if (!response.wasSuccessfull()) {
+            view.displayMessage(response.getMessage());
             return;
         }
-        if (chosenToken.putsTeamInCheck(playerChoice.getTarget())) {
-            view.displayMessage("Cannot move into check.");
-            return;
-        }
-        chosenToken.move(playerChoice.getTarget());
         model.toggleActivePlayer();
     }
 
@@ -82,6 +79,16 @@ public class Controller {
      */
     public MoveRequest getChoice() {
         return ConsoleUI.getTurnRequest();
+    }
+
+
+    public void setUpDebugTokens() {
+        model.getBoard().setUpDebugTokens();
+    }
+
+
+    public void setUpStandardGameTokens() {
+        model.getBoard().setUpStandardGameTokens();
     }
 
 

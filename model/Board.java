@@ -34,25 +34,28 @@ public class Board {
      * Default Constructor for Board.
      */
     public Board() {
-        debugGameTokens();
-        // initializeGameTokens();
+        this.gameTokens = new ArrayList<>();
+    }
+
+
+    public void setKing(Token kingToken) {
+        if (kingToken.isWhite()) {
+            whiteKing = kingToken;
+        }
+        else {
+            blackKing = kingToken;
+        }
     }
     
     
     // Generate tokens on board for debugging.
     // Remove later.
-    private void debugGameTokens() {
-        ArrayList<Token> tokens = new ArrayList<>();
+    public void setUpDebugTokens() {
         TokenFactory tokenMaker = new TokenFactory(this);
-
         whiteKing = tokenMaker.build(TokenType.KING, Team.WHITE, new Point(1, 0));
         blackKing = tokenMaker.build(TokenType.KING, Team.BLACK, new Point(0, 7));
-        tokens.add(whiteKing);
-        tokens.add(blackKing);
-        tokens.add(tokenMaker.build(TokenType.KNIGHT, Team.WHITE, new Point(0, 1)));
-        tokens.add(tokenMaker.build(TokenType.ROOK, Team.BLACK, new Point(0, 3)));
-
-        gameTokens = tokens;
+        tokenMaker.build(TokenType.KNIGHT, Team.WHITE, new Point(0, 1));
+        tokenMaker.build(TokenType.ROOK, Team.BLACK, new Point(0, 3));
     }
 
 
@@ -233,20 +236,12 @@ public class Board {
      * 
      * @return  the game tokens for each team for a standard game of chess.
      */
-    private void initializeGameTokens() {
-        ArrayList<Token> allTokens = initializeTeamTokens(Team.WHITE);
-        ArrayList<Token> blackTokens = initializeTeamTokens(Team.BLACK);
-        for (Token token : blackTokens) {
-            allTokens.add(token);
-        }
-
+    public void setUpStandardGameTokens() {
+        initializeTeamTokens(Team.WHITE);
+        initializeTeamTokens(Team.BLACK);
         TokenFactory tokenMaker = new TokenFactory(this);
-        whiteKing = tokenMaker.build(TokenType.KING, Team.WHITE, new Point(4, 0));
-        blackKing = tokenMaker.build(TokenType.KING, Team.BLACK, new Point(3, Constants.HEIGHT - Constants.OFFSET));
-        allTokens.add(whiteKing);
-        allTokens.add(blackKing);
-
-        gameTokens = allTokens;
+        this.setKing(tokenMaker.build(TokenType.KING, Team.WHITE, new Point(4, 0)));
+        this.setKing(tokenMaker.build(TokenType.KING, Team.BLACK, new Point(3, Constants.HEIGHT - Constants.OFFSET)));
     }
  
 
@@ -257,31 +252,24 @@ public class Board {
      * @return          the game tokens for specified team for a standard
      *                  game of chess.
      */
-    private ArrayList<Token> initializeTeamTokens(Team team) {
-        boolean isWhiteTeam = team == Team.WHITE;
-        int pawnY     = (isWhiteTeam) ? 1 : Constants.HEIGHT - Constants.OFFSET - 1;
-        int backLineY = (isWhiteTeam) ? 0 : Constants.HEIGHT - Constants.OFFSET;
+    private void initializeTeamTokens(Team team) {
+        int pawnY     = (team == Team.WHITE) ? 1 : Constants.HEIGHT - Constants.OFFSET - 1;
+        int backLineY = (team == Team.WHITE) ? 0 : Constants.HEIGHT - Constants.OFFSET;
         
         TokenFactory tokenMaker = new TokenFactory(this);
-        ArrayList<Token> tokens = new ArrayList<>();
         for (int i = 0; i < Constants.WIDTH; i++) {
-            tokens.add(tokenMaker.build(TokenType.PAWN, team, new Point(i, pawnY)));
+            tokenMaker.build(TokenType.PAWN, team, new Point(i, pawnY));
         }
         
-        tokens.add(tokenMaker.build(TokenType.ROOK,   team, new Point(0, backLineY)));
-        tokens.add(tokenMaker.build(TokenType.ROOK,   team, new Point(Constants.WIDTH - Constants.OFFSET,     backLineY)));
-
-        tokens.add(tokenMaker.build(TokenType.BISHOP, team, new Point(1, backLineY)));
-        tokens.add(tokenMaker.build(TokenType.BISHOP, team, new Point(Constants.WIDTH - Constants.OFFSET - 1, backLineY)));
-
-        tokens.add(tokenMaker.build(TokenType.KNIGHT, team, new Point(2, backLineY)));
-        tokens.add(tokenMaker.build(TokenType.KNIGHT, team, new Point(Constants.WIDTH - Constants.OFFSET - 2, backLineY)));
-
+        tokenMaker.build(TokenType.ROOK,   team, new Point(0, backLineY));
+        tokenMaker.build(TokenType.ROOK,   team, new Point(Constants.WIDTH - Constants.OFFSET,     backLineY));
+        tokenMaker.build(TokenType.BISHOP, team, new Point(1, backLineY));
+        tokenMaker.build(TokenType.BISHOP, team, new Point(Constants.WIDTH - Constants.OFFSET - 1, backLineY));
+        tokenMaker.build(TokenType.KNIGHT, team, new Point(2, backLineY));
+        tokenMaker.build(TokenType.KNIGHT, team, new Point(Constants.WIDTH - Constants.OFFSET - 2, backLineY));
         
-        int queenX = (isWhiteTeam) ? 3 : 4; 
-        tokens.add(tokenMaker.build(TokenType.QUEEN,  team, new Point(queenX,  backLineY)));
-    
-        return tokens;
+        int queenX = (team == Team.WHITE) ? 3 : 4; 
+        tokenMaker.build(TokenType.QUEEN,  team, new Point(queenX,  backLineY));
     }
 
 

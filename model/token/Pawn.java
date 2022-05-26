@@ -43,29 +43,20 @@ public class Pawn extends Token {
         }
 
         boolean sameColumn = location.isSameColumn(target);
-        boolean singleTileMove = location.yDistanceTo(target) == 1;
-        boolean singleDiagonalMove = singleTileMove && location.xDistanceTo(target) == 1;
         boolean opponentAtTarget = hasOpponentAt(target);
 
-        if (firstMove && isDoubleTileMove(target) && 
-            sameColumn && !opponentAtTarget) {
-            return true;
+        if (location.yDistanceTo(target) == 2) {
+            return firstMove && sameColumn && !opponentAtTarget && !isBlockedTowards(target);
         }
-        if (sameColumn && singleTileMove && !opponentAtTarget) {
-            return true;
-        }
-        if (singleDiagonalMove && opponentAtTarget) {
-            return true;
-        }
-
-        return !isBlockedTowards(target);
+        return  (sameColumn && !opponentAtTarget) ||
+                ((location.xDistanceTo(target) == 1) && opponentAtTarget);
     }
     
     
     @Override
     protected boolean isBlockedTowards(Point target) {
-        if (!isDoubleTileMove(target)) {
-            return false;
+        if (location.yDistanceTo(target) != 2) {
+            return hasOpponentAt(target);
         }
         return board.hasTokensBetweenPoints(location, target);
     }
@@ -95,26 +86,7 @@ public class Pawn extends Token {
      */
     private boolean isMovingForward(Point target) {
         int differenceY = target.getY() - location.getY();
-        if (isWhite() && differenceY >= 0) {
-            return true;
-        }
-        if (!isWhite() && differenceY <= 0) {
-            return true;
-        }
-        return false;
-    }
-    
-    
-    /**
-     * Check if this pawn's target location is two spaces away in the y
-     * direction.
-     * 
-     * @param   target  the target location for this pawn to move to.
-     * @return          true if this pawn's target location is two spaces
-     *                  away in the y direction.
-     *                  false otherwise.
-     */
-    private boolean isDoubleTileMove(Point target) {
-        return location.yDistanceTo(target) == 2;
+        return  (isWhite() && differenceY >= 0) ||
+                (!isWhite() && differenceY <= 0);
     }
 }

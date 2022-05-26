@@ -2,6 +2,7 @@ package model.token;
 
 import model.Board;
 import model.Point;
+import util.MoveResponse;
 import globals.Team;
 
 
@@ -48,12 +49,19 @@ public abstract class Token {
      * 
      * @param   target  the target location for this token to move to.
      */
-    public void move(Point target) {
+    public MoveResponse move(Point target) {
+        if (!isValidMove(target)) {
+            return new MoveResponse(false, "That is not a valid move.");
+        }
+        if (putsTeamInCheck(target)) {
+            return new MoveResponse(false, "Cannot move into check.");
+        }
         if (hasOpponentAt(target)) {
             board.removeTokenAt(target);
         }
         setLocation(target);
         postMoveActions();
+        return new MoveResponse(true, "Token was moved.");
     }
     
     

@@ -97,7 +97,7 @@ public class Point {
      *                  false otherwise.
      */
     public boolean isAtSameLocationAs(Point target) {
-        return isSameRow(target) && isSameColumn(target);
+        return this.equals(target);
     }
 
 
@@ -140,6 +140,19 @@ public class Point {
      */
     public int getY() {
         return this.y;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Point)) {
+            return false;
+        }
+        Point point = (Point) o;
+        return this.x == point.x && this.y == point.y;
     }
     
 

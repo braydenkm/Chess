@@ -28,7 +28,8 @@ public class TokenFactory {
     
 
     /**
-     * Builds and returns a subclass of Token depending on the type requested.
+     * Builds, adds to board, and returns a subclass of Token depending on the
+     * type requested.
      * 
      * @param   type                the type of token to create.
      * @param   team                team this token is sided with.
@@ -37,21 +38,30 @@ public class TokenFactory {
      *                              set by parameters supplied.
      */
     public Token build(TokenType type, Team team, Point startingLocation) {
+        Token token;
         switch (type) {
             case PAWN:
-                return new Pawn  (team, startingLocation, board);
+                token = new Pawn  (team, startingLocation, board);
+                break;
             case ROOK:
-                return new Rook  (team, startingLocation, board);
+                token = new Rook  (team, startingLocation, board);
+                break;
             case BISHOP:
-                return new Bishop(team, startingLocation, board);
+                token = new Bishop(team, startingLocation, board);
+                break;
             case KNIGHT:
-                return new Knight(team, startingLocation, board);
+                token = new Knight(team, startingLocation, board);
+                break;
             case QUEEN:
-                return new Queen (team, startingLocation, board);
+                token = new Queen (team, startingLocation, board);
+                break;
             case KING:
-                return new King  (team, startingLocation, board);
+                token = new King  (team, startingLocation, board);
+                break;
             default:
-                return new Pawn  (Team.WHITE, new Point(0, 0), board);
+                token = new Pawn  (Team.WHITE, new Point(0, 0), board);
         }
+        board.addToken(token);
+        return token;
     }
 }

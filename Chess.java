@@ -15,6 +15,9 @@ public class Chess {
         View view = new View(model);
         Controller controller = new Controller(model, view);
 
+        // controller.setUpDebugTokens();
+        controller.setUpStandardGameTokens();
+
         controller.updateView();
         while(controller.isRunning()) {
             controller.performNextTurn();
